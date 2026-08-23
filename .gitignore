@@ -1,0 +1,19 @@
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境
+venv/
+.env
+
+# 数据库与本地存储
+*.db
+*.sqlite3
+~/.bazi-career/
+
+# 测试与打包
+.pytest_cache/
+build/
+dist/
+*.egg-info/

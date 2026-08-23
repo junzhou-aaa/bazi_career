@@ -7,7 +7,9 @@ authors = [{name = "Author"}]
 requires-python = ">=3.10"
 dependencies = [
     "click",
-    "pydantic"
+    "pydantic",
+    "lunar_python",
+    "pytz"
 ]
 
 [project.scripts]
