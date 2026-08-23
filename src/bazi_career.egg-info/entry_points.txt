@@ -1,0 +1,2 @@
+[console_scripts]
+bazi-career = bazi_career.cli:cli

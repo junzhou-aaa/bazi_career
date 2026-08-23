@@ -1,0 +1,23 @@
+[project]
+name = "bazi-career"
+version = "0.1.0"
+description = "Calibrated Career Planning CLI based on Bazi"
+readme = "README.md"
+authors = [{name = "Author"}]
+requires-python = ">=3.10"
+dependencies = [
+    "click",
+    "pydantic"
+]
+
+[project.scripts]
+bazi-career = "bazi_career.cli:cli"
+
+[project.optional-dependencies]
+test = [
+    "pytest"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
