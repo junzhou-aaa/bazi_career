@@ -45,10 +45,24 @@ def chart():
     "Generate Four Pillars chart."
     click.echo("Generating chart...")
 
+from bazi_career.application.validation_workflow import run_validation_workflow
+
 @cli.command(name="validate")
-def validate_cmd():
+@click.option('--profile-id', required=True, help="User profile ID to validate.")
+def validate_cmd(profile_id):
     "Run historical validation workflow."
-    click.echo("Validating historical events...")
+    click.echo(f"Validating historical events for {profile_id}...")
+    
+    # Mock data for demonstration
+    mock_chart = {"day_master": "甲", "five_elements": {"甲": "木", "子": "水"}}
+    mock_career = {"experience": [{"company": "Tech Corp", "role": "Engineer", "year": "2020"}]}
+    
+    try:
+        response = run_validation_workflow(profile_id, mock_chart, mock_career)
+        click.echo(f"Validation complete. Confidence Score: {response.confidence_score}")
+        click.echo(f"Summary: {response.summary}")
+    except Exception as e:
+        click.echo(f"Error during validation: {str(e)}", err=True)
 
 @cli.command(name="recalibrate")
 def recalibrate():
@@ -70,10 +84,26 @@ def jobs_rank():
     "Rank discovered jobs."
     click.echo("Ranking jobs...")
 
+from bazi_career.application.planning_workflow import run_planning_workflow
+
 @cli.command(name="plan-generate")
-def plan_generate():
+@click.option('--profile-id', required=True, help="User profile ID to generate plan for.")
+def plan_generate(profile_id):
     "Generate career plan."
-    click.echo("Generating plan...")
+    click.echo(f"Generating plan for {profile_id}...")
+    
+    # Mock data for demonstration
+    mock_chart = {"day_master": "甲", "five_elements": {"甲": "木", "子": "水"}}
+    mock_career = {"experience": [{"company": "Tech Corp", "role": "Engineer", "year": "2020"}], "skills": ["Python"]}
+    
+    try:
+        plan = run_planning_workflow(profile_id, mock_chart, mock_career, validation_confidence=0.85)
+        click.echo("Plan generated successfully!")
+        click.echo("-" * 40)
+        click.echo(plan.content_md)
+        click.echo("-" * 40)
+    except Exception as e:
+        click.echo(f"Error during planning: {str(e)}", err=True)
 
 @cli.command(name="doctor")
 def doctor():
