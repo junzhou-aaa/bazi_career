@@ -1,5 +1,8 @@
 click
 pydantic
+lunar_python
+pytz
+openai
 
 [test]
 pytest

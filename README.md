@@ -30,9 +30,13 @@ python3 -m venv venv
 ```
 
 **3. Activate the Environment**
-- On **Mac/Linux**: 
+- On **Mac/Linux (Bash/Zsh)**: 
   ```bash
   source venv/bin/activate
+  ```
+- On **Mac/Linux (Fish Shell)**: 
+  ```bash
+  source venv/bin/activate.fish
   ```
 - On **Windows**: 
   ```bash

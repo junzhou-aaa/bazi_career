@@ -10,7 +10,9 @@ dependencies = [
     "pydantic",
     "lunar_python",
     "pytz",
-    "openai"
+    "openai",
+    "geopy",
+    "timezonefinder"
 ]
 
 [project.scripts]
