@@ -15,6 +15,23 @@ def init():
     init_db()
     click.echo("Database initialized.")
 
+from bazi_career.db import set_config, get_config
+
+@cli.command(name="configure")
+def configure():
+    "Configure API keys and providers (BYOK)."
+    provider = click.prompt("Select LLM Provider", type=click.Choice(["openai", "anthropic"]), default="openai")
+    set_config("llm_provider", provider)
+    
+    if provider == "openai":
+        api_key = click.prompt("Enter OpenAI API Key", hide_input=True)
+        set_config("openai_api_key", api_key)
+    elif provider == "anthropic":
+        api_key = click.prompt("Enter Anthropic API Key", hide_input=True)
+        set_config("anthropic_api_key", api_key)
+        
+    click.echo("Configuration saved securely to local database.")
+
 @cli.command(name="profile-create")
 def profile_create():
     "Create a new birth profile."

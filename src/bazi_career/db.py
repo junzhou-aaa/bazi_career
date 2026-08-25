@@ -180,19 +180,45 @@ CREATE TABLE IF NOT EXISTS config (
 );
 """
 
-def init_db(db_path: Path = DB_PATH):
+def init_db(db_path: Path | None = None):
     """Initialize the database schema."""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(db_path) as conn:
+    import bazi_career.db
+    path = db_path or bazi_career.db.DB_PATH
+    bazi_career.db.DATA_DIR.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(path) as conn:
         conn.executescript(SCHEMA)
         conn.commit()
 
 @contextmanager
-def get_db_connection(db_path: Path = DB_PATH):
+def get_db_connection(db_path: Path | None = None):
     """Get a database connection context manager."""
-    conn = sqlite3.connect(db_path)
+    import bazi_career.db
+    path = db_path or bazi_career.db.DB_PATH
+    conn = sqlite3.connect(path)
     conn.row_factory = sqlite3.Row
     try:
         yield conn
     finally:
         conn.close()
+
+def set_config(key: str, value: str):
+    """Set a configuration value."""
+    from datetime import datetime
+    with get_db_connection() as conn:
+        conn.execute(
+            """
+            INSERT INTO config (key, value, updated_at) 
+            VALUES (?, ?, ?)
+            ON CONFLICT(key) DO UPDATE SET 
+                value=excluded.value,
+                updated_at=excluded.updated_at
+            """,
+            (key, value, datetime.now().isoformat())
+        )
+        conn.commit()
+
+def get_config(key: str) -> str | None:
+    """Get a configuration value."""
+    with get_db_connection() as conn:
+        row = conn.execute("SELECT value FROM config WHERE key = ?", (key,)).fetchone()
+        return row["value"] if row else None

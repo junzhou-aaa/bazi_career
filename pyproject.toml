@@ -9,7 +9,8 @@ dependencies = [
     "click",
     "pydantic",
     "lunar_python",
-    "pytz"
+    "pytz",
+    "openai"
 ]
 
 [project.scripts]
