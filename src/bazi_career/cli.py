@@ -20,7 +20,7 @@ from bazi_career.db import set_config, get_config
 @cli.command(name="configure")
 def configure():
     "Configure API keys and providers (BYOK)."
-    provider = click.prompt("Select LLM Provider", type=click.Choice(["openai", "anthropic"]), default="openai")
+    provider = click.prompt("Select LLM Provider", type=click.Choice(["openai", "anthropic", "deepseek"]), default="openai")
     set_config("llm_provider", provider)
     
     if provider == "openai":
@@ -29,6 +29,9 @@ def configure():
     elif provider == "anthropic":
         api_key = click.prompt("Enter Anthropic API Key", hide_input=True)
         set_config("anthropic_api_key", api_key)
+    elif provider == "deepseek":
+        api_key = click.prompt("Enter DeepSeek API Key", hide_input=True)
+        set_config("deepseek_api_key", api_key)
         
     click.echo("Configuration saved securely to local database.")
 
