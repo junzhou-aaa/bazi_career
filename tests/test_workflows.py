@@ -33,6 +33,7 @@ class MockLLMProvider:
 
 def test_validate_cmd(monkeypatch):
     monkeypatch.setattr("bazi_career.application.validation_workflow.get_llm_provider", lambda: MockLLMProvider())
+    monkeypatch.setattr("bazi_career.cli.get_or_select_profile_id", lambda x: x or "test1")
     runner = CliRunner()
     result = runner.invoke(cli, ['validate', '--profile-id', 'test1'])
     assert result.exit_code == 0
@@ -40,6 +41,7 @@ def test_validate_cmd(monkeypatch):
 
 def test_plan_generate_cmd(monkeypatch):
     monkeypatch.setattr("bazi_career.application.planning_workflow.get_llm_provider", lambda: MockLLMProvider())
+    monkeypatch.setattr("bazi_career.cli.get_or_select_profile_id", lambda x: x or "test1")
     runner = CliRunner()
     result = runner.invoke(cli, ['plan-generate', '--profile-id', 'test1'])
     assert result.exit_code == 0
