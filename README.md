@@ -88,13 +88,13 @@ Here is a complete list of all the commands you can type into your terminal.
   * **What it does:** Uses astronomical math to calculate your precise "Four Pillars" (BaZi) chart, adjusting for true solar time and the Southern Hemisphere if necessary.
 
 ### AI Workflow Commands
-* `bazi-career validate --profile-id <id>`
-  * **What it does:** The AI compares your calculated BaZi chart against your actual past career history to see how well they match, generating a "Confidence Score."
+* `bazi-career validate`
+  * **What it does:** The AI compares your calculated BaZi chart against your actual past career history to see how well they match, generating a "Confidence Score." (Auto-detects profile ID).
 * `bazi-career recalibrate`
-  * **What it does:** Fine-tunes the astrology rules for your specific profile if the validation score is too low.
-* `bazi-career career-analyze`
-  * **What it does:** Analyzes your raw skills and experience to build a standardized professional profile.
-* `bazi-career plan-generate --profile-id <id>`
+  * **What it does:** Fine-tunes the astrology rules for your specific profile via an interactive Q&A if the validation score is too low or your birth time is uncertain.
+* `bazi-career career-analyze` **(WIP)**
+  * **What it does:** Analyzes your raw skills and experience to build a standardized professional profile. *(Currently under development)*.
+* `bazi-career plan-generate`
   * **What it does:** The magic command! The AI synthesizes your astrology chart and professional profile to output a detailed 1, 3, and 5-year career plan, complete with industry and role recommendations.
 
 ### Job Matching Commands (Phase 5+)
@@ -121,7 +121,7 @@ bazi-career profile-create
 bazi-career chart
 
 # 4. Generate the ultimate career plan
-bazi-career plan-generate --profile-id my_profile_id
+bazi-career plan-generate
 ```
 
 Enjoy exploring the intersection of ancient wisdom and modern AI!

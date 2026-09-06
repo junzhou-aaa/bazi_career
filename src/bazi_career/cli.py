@@ -127,10 +127,47 @@ from bazi_career.domain.astrology.pillars import calculate_chart, Sex
 import json
 from datetime import datetime
 
+def get_or_select_profile_id(provided_id: str | None) -> str:
+    from bazi_career.db import get_db_connection
+    with get_db_connection() as conn:
+        if provided_id:
+            row = conn.execute("SELECT id FROM profiles WHERE id = ?", (provided_id,)).fetchone()
+            if not row:
+                click.echo(f"Error: Profile '{provided_id}' not found.", err=True)
+                raise click.Abort()
+            return provided_id
+            
+        rows = conn.execute("""
+            SELECT p.id, bp.birth_date, bp.birth_place_text 
+            FROM profiles p 
+            LEFT JOIN birth_profiles bp ON p.id = bp.profile_id
+            ORDER BY p.created_at DESC
+        """).fetchall()
+        
+        if not rows:
+            click.echo("No profiles found. Please run `bazi-career profile-create` first.", err=True)
+            raise click.Abort()
+            
+        if len(rows) == 1:
+            click.echo(f"Auto-selected profile: {rows[0]['id']} (Born: {rows[0]['birth_date']})")
+            return rows[0]['id']
+            
+        click.echo("Multiple profiles found. Please select one:")
+        choices = []
+        for i, row in enumerate(rows, 1):
+            desc = f"{row['id']} (Born: {row['birth_date'] or 'Unknown'} at {row['birth_place_text'] or 'Unknown'})"
+            click.echo(f"{i}. {desc}")
+            choices.append(str(i))
+            
+        choice = click.prompt("Enter the number of the profile", type=click.Choice(choices))
+        return rows[int(choice) - 1]['id']
+
+
 @cli.command(name="chart")
-@click.option('--profile-id', required=True, help="User profile ID.")
+@click.option('--profile-id', required=False, help="User profile ID. Auto-detected if not provided.")
 def chart(profile_id):
     "Generate Four Pillars chart from the database."
+    profile_id = get_or_select_profile_id(profile_id)
     from bazi_career.db import get_db_connection
     
     with get_db_connection() as conn:
@@ -193,9 +230,10 @@ def chart(profile_id):
 from bazi_career.application.validation_workflow import run_validation_workflow
 
 @cli.command(name="validate")
-@click.option('--profile-id', required=True, help="User profile ID to validate.")
+@click.option('--profile-id', required=False, help="User profile ID to validate. Auto-detected if not provided.")
 def validate_cmd(profile_id):
     "Run historical validation workflow."
+    profile_id = get_or_select_profile_id(profile_id)
     click.echo(f"Validating historical events for {profile_id}...")
     
     # Mock data for demonstration
@@ -209,10 +247,17 @@ def validate_cmd(profile_id):
     except Exception as e:
         click.echo(f"Error during validation: {str(e)}", err=True)
 
+from bazi_career.application.recalibration_workflow import run_recalibration_workflow
+
 @cli.command(name="recalibrate")
-def recalibrate():
+@click.option('--profile-id', required=False, help="User profile ID. Auto-detected if not provided.")
+def recalibrate(profile_id):
     "Recalibrate the model."
-    click.echo("Recalibrating...")
+    profile_id = get_or_select_profile_id(profile_id)
+    try:
+        run_recalibration_workflow(profile_id)
+    except Exception as e:
+        click.echo(f"Error during recalibration: {str(e)}", err=True)
 
 @cli.command(name="career-analyze")
 def career_analyze():
@@ -232,9 +277,10 @@ def jobs_rank():
 from bazi_career.application.planning_workflow import run_planning_workflow
 
 @cli.command(name="plan-generate")
-@click.option('--profile-id', required=True, help="User profile ID to generate plan for.")
+@click.option('--profile-id', required=False, help="User profile ID to generate plan for. Auto-detected if not provided.")
 def plan_generate(profile_id):
     "Generate career plan."
+    profile_id = get_or_select_profile_id(profile_id)
     click.echo(f"Generating plan for {profile_id}...")
     
     # Mock data for demonstration
